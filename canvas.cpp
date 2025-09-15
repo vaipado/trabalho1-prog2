@@ -1,7 +1,31 @@
 #include "canvas.hpp"
+#include <iostream>
 
 void CriarCanvas (Canvas &tela, int largura, int altura){
-    // Código da lógica será implementado aqui
+    if(largura <= 0 || altura <= 0){
+        std::cerr << "Largura ou altura inválida" << std::endl;
+        tela.largura = 0;
+        tela.altura = 0;
+        tela.pixels = nullptr;
+        tela.cores = nullptr;
+        return;
+    }
+
+    tela.largura = largura;
+    tela.altura = altura;
+
+    tela.pixels = new char *[altura];
+    tela.cores = new char *[altura];
+    
+    for(int i = 0; i < altura; i++){
+        tela.pixels[i] = new char [largura];
+        tela.cores[i] = new char [largura];
+
+        for(int j = 0; j < largura; j++){
+            tela.pixels[i][j] = ' ';
+            tela.cores[i][j] = 'W'
+        }
+    }
 }
 void DestruirCanvas(Canvas &tela){
     // Código da lógica será implementado aqui
