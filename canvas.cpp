@@ -1,6 +1,13 @@
 #include "canvas.hpp"
 #include <iostream>
 
+bool verificaCoordenada(const Canvas &tela, int x, int y) // Uma função que valida coordenadas, fiz para evitar a repetição de código 
+{
+    if (x < 0 || x > tela.largura || y < 0 || y > tela.altura)
+        return true; // Se retornar true, então as coordenada são inválidas
+    return false;
+}
+
 void CriarCanvas(Canvas &tela, int largura, int altura)
 {
     if (largura <= 0 || altura <= 0)
@@ -76,18 +83,42 @@ void ImprimirCanvas(const Canvas &tela)
         std::cout << '|' << std::endl; // E isso vai criar a borda lateral direita
     }
 
-    for (int i = 0; i < tela.largura + 2; i++) 
+    for (int i = 0; i < tela.largura + 2; i++)
         std::cout << '-'; // Isso vai criar o topo da borda do canvas
     std::cout << std::endl;
 }
 
 void DesenharPonto(Canvas &tela, int x, int y, char simbolo, char cor)
 {
-    // Código da lógica será implementado aqui
+    if (verificaCoordenada(tela, x, y))
+    {
+        std::cerr << "Coordenadas Inválidas!" << std::endl; // Validação para as coordenadas
+        return;
+    }
+    tela.pixels[y][x] = simbolo;
+    tela.cores[y][x] = cor;
 }
+
 void DesenharLinha(Canvas &tela, int x1, int y1, int x2, int y2, char simbolo, char cor)
 {
-    // Código da lógica será implementado aqui
+    if (verificaCoordenada(tela, x1, y1) || verificaCoordenada(tela, x2, y2))
+    {
+        std::cerr << "Coordenadas Inválidas!" << std::endl; // Validação para as coordenadas
+        return;
+    }
+    else if (x1 == x2 || y1 == y2)
+    {
+        for (int i = y1 - 1; i < y2; i++)
+            for (int j = x1 - 1; j < x2; j++){
+                tela.pixels[i][j] = simbolo;
+                tela.cores[i][j] = cor;
+            }
+    }
+    else
+    {
+        std::cerr << "A linha não é perfeitamente horizontal ou vertical!" << std::endl;
+        return;
+    }
 }
 void DesenharRetangulo(Canvas &tela, int x, int y, int largura, int altura, char simbolo, char cor)
 {
