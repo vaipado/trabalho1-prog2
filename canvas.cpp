@@ -1,5 +1,20 @@
 #include "canvas.hpp"
 #include <iostream>
+#include <string>
+
+std::string GetColorCode(char cor) {
+    switch (cor) {
+        case 'K': return "\033[30m"; // Black
+        case 'R': return "\033[31m"; // Red
+        case 'G': return "\033[32m"; // Green
+        case 'Y': return "\033[33m"; // Yellow
+        case 'B': return "\033[34m"; // Blue
+        case 'M': return "\033[35m"; // Magenta
+        case 'C': return "\033[36m"; // Cyan
+        case 'W': return "\033[37m"; // White
+        default:  return "\033[0m";  // Código para Resetar/Padrão
+    }
+}
 
 bool verificaCoordenada(const Canvas &tela, int x, int y) // Uma função que valida coordenadas, fiz para evitar a repetição de código
 {
@@ -34,7 +49,7 @@ void CriarCanvas(Canvas &tela, int largura, int altura)
         for (int j = 0; j < largura; j++)
         {
             tela.pixels[i][j] = ' ';
-            tela.cores[i][j] = 'W';
+            tela.cores[i][j] = ' ';
         }
     }
 }
@@ -78,7 +93,7 @@ void ImprimirCanvas(const Canvas &tela)
 
         for (int j = 0; j < tela.largura; j++)
         {
-            std::cout << tela.pixels[i][j];
+            std::cout << GetColorCode(tela.cores[i][j]) << tela.pixels[i][j];
         }
         std::cout << '|' << std::endl; // E isso vai criar a borda lateral direita
     }
