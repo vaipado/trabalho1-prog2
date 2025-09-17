@@ -2,19 +2,32 @@
 #include <iostream>
 #include <string>
 
-std::string GetColorCode(char cor) {
-    switch (cor) {
-        case 'K': return "\033[30m"; // Black
-        case 'R': return "\033[31m"; // Red
-        case 'G': return "\033[32m"; // Green
-        case 'Y': return "\033[33m"; // Yellow
-        case 'B': return "\033[34m"; // Blue
-        case 'M': return "\033[35m"; // Magenta
-        case 'C': return "\033[36m"; // Cyan
-        case 'W': return "\033[37m"; // White
-        default:  return "\033[0m";  // Código para Resetar/Padrão
+std::string GetColorCode(char cor)
+{
+    switch (cor)
+    {
+    case 'K':
+        return "\033[30m"; // Black
+    case 'R':
+        return "\033[31m"; // Red
+    case 'G':
+        return "\033[32m"; // Green
+    case 'Y':
+        return "\033[33m"; // Yellow
+    case 'B':
+        return "\033[34m"; // Blue
+    case 'M':
+        return "\033[35m"; // Magenta
+    case 'C':
+        return "\033[36m"; // Cyan
+    case 'W':
+        return "\033[37m"; // White
+    default:
+        return "\033[0m"; // Código para Resetar/Padrão
     }
 }
+
+const std::string RESET = GetColorCode(' ');
 
 bool verificaCoordenada(const Canvas &tela, int x, int y) // Uma função que valida coordenadas, fiz para evitar a repetição de código
 {
@@ -23,11 +36,17 @@ bool verificaCoordenada(const Canvas &tela, int x, int y) // Uma função que va
     return false;
 }
 
+void modificaPixel(Canvas &tela, int x, int y, char simbolo, char cor)
+{
+    tela.pixels[y][x] = simbolo;
+    tela.cores[y][x] = cor;
+}
+
 void CriarCanvas(Canvas &tela, int largura, int altura)
 {
     if (largura <= 0 || altura <= 0)
     {
-        std::cerr << "Largura ou altura inválida" << std::endl; // Aqui eu valido as medidas passadas
+        std::cout << "Largura ou altura inválida" << std::endl; // Aqui eu valido as medidas passadas
         tela.largura = 0;
         tela.altura = 0;
         tela.pixels = nullptr;
@@ -48,8 +67,7 @@ void CriarCanvas(Canvas &tela, int largura, int altura)
 
         for (int j = 0; j < largura; j++)
         {
-            tela.pixels[i][j] = ' ';
-            tela.cores[i][j] = ' ';
+            modificaPixel(tela, j, i, ' ', ' ');
         }
     }
 }
@@ -107,18 +125,17 @@ void DesenharPonto(Canvas &tela, int x, int y, char simbolo, char cor)
 {
     if (verificaCoordenada(tela, x, y))
     {
-        std::cerr << "Coordenadas Inválidas!" << std::endl; // Validação para as coordenadas
+        std::cout << "Coordenadas Inválidas!" << std::endl; // Validação para as coordenadas
         return;
     }
-    tela.pixels[y][x] = simbolo;
-    tela.cores[y][x] = cor;
+    modificaPixel(tela, x, y, simbolo, cor);
 }
 
 void DesenharLinha(Canvas &tela, int x1, int y1, int x2, int y2, char simbolo, char cor)
 {
     if (verificaCoordenada(tela, x1, y1) || verificaCoordenada(tela, x2, y2))
     {
-        std::cerr << "Coordenadas Inválidas!" << std::endl; // Validação para as coordenadas
+        std::cout << "Coordenadas Inválidas!" << std::endl; // Validação para as coordenadas
         return;
     }
     else if (x1 == x2 || y1 == y2)
@@ -126,13 +143,12 @@ void DesenharLinha(Canvas &tela, int x1, int y1, int x2, int y2, char simbolo, c
         for (int i = y1 - 1; i < y2; i++)
             for (int j = x1 - 1; j < x2; j++)
             {
-                tela.pixels[i][j] = simbolo;
-                tela.cores[i][j] = cor;
+                modificaPixel(tela, j, i, simbolo, cor);
             }
     }
     else
     {
-        std::cerr << "A linha não é perfeitamente horizontal ou vertical!" << std::endl;
+        std::cout << "A linha não é perfeitamente horizontal ou vertical!" << std::endl;
         return;
     }
 }
@@ -144,23 +160,19 @@ void DesenharRetangulo(Canvas &tela, int x, int y, int largura, int altura, char
 
     if (verificaCoordenada(tela, x, y) || verificaCoordenada(tela, x2, y2))
     {
-        std::cerr << "Coordenadas Inválidas!" << std::endl;
+        std::cout << "Coordenadas Inválidas!" << std::endl;
         return;
     }
 
     for (int i = x - 1; i < x2; i++)
     {
-        tela.pixels[i][y - 1] = simbolo;
-        tela.pixels[i][y2 - 1] = simbolo;
-        tela.cores[i][y - 1] = cor;
-        tela.cores[i][y2 - 1] = cor;
+        modificaPixel(tela, y - 1, i, simbolo, cor);
+        modificaPixel(tela, y2 - 1, i, simbolo, cor);
     }
     for (int i = y - 1; i < y2; i++)
     {
-        tela.pixels[x - 1][i] = simbolo;
-        tela.pixels[x2 - 1][i] = simbolo;
-        tela.cores[x - 1][i] = cor;
-        tela.cores[x2 - 1][i] = cor;
+        modificaPixel(tela, i, x - 1, simbolo, cor);
+        modificaPixel(tela, i, x2 - 1, simbolo, cor);
     }
 }
 void DesenharRetanguloPreenchido(Canvas &tela, int x, int y, int largura, int altura, char simbolo, char cor)
@@ -171,14 +183,13 @@ void DesenharRetanguloPreenchido(Canvas &tela, int x, int y, int largura, int al
 
     if (verificaCoordenada(tela, x, y) || verificaCoordenada(tela, x2, y2))
     {
-        std::cerr << "Coordenadas Inválidas!" << std::endl;
+        std::cout << "Coordenadas Inválidas!" << std::endl;
         return;
     }
     for (int i = x - 1; i < x2; i++)
         for (int j = y - 1; j < y2; j++)
         {
-            tela.pixels[i][j] = simbolo;
-            tela.cores[i][j] = cor;
+            modificaPixel(tela, j, i, simbolo, cor);
         }
 }
 void RedimensionarCanvas(Canvas &tela, int novaLargura, int novaAltura)
@@ -189,8 +200,15 @@ void SobreporCanvas(Canvas &telaDestino, const Canvas &telaOrigem1, const Canvas
 {
     // Código da lógica será implementado aqui
 }
+
 bool CompararCanvas(const Canvas &tela1, const Canvas &tela2)
 {
-    // Código da lógica será implementado aqui
-    return true;
+    if (tela1.altura == tela2.altura && tela1.largura == tela2.largura)
+    {
+        for (int i = 0; i < tela1.altura; i++)
+            for (int j = 0; j < tela1.largura; j++)
+                if (tela1.pixels[i][j] != tela2.pixels[i][j] || tela1.cores[i][j] != tela2.cores[i][j])
+                    return false;
+        return true;
+    } return false;
 }
