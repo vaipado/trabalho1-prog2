@@ -5,7 +5,7 @@ void CriarCanvas(Canvas &tela, int largura, int altura)
 {
     if (largura <= 0 || altura <= 0)
     {
-        std::cerr << "Largura ou altura inválida" << std::endl;
+        std::cerr << "Largura ou altura inválida" << std::endl; // Aqui eu valido as medidas passadas
         tela.largura = 0;
         tela.altura = 0;
         tela.pixels = nullptr;
@@ -60,8 +60,27 @@ void DestruirCanvas(Canvas &tela)
 
 void ImprimirCanvas(const Canvas &tela)
 {
-    // Código da lógica será implementado aqui
+
+    for (int i = 0; i < tela.largura + 2; i++)
+        std::cout << '-'; // Isso vai criar o topo da borda do canvas
+    std::cout << std::endl;
+
+    for (int i = 0; i < tela.altura; i++)
+    {
+        std::cout << '|'; // Isso vai criar a borda lateral esquerda
+
+        for (int j = 0; j < tela.largura; j++)
+        {
+            std::cout << tela.pixels[i][j];
+        }
+        std::cout << '|' << std::endl; // E isso vai criar a borda lateral direita
+    }
+
+    for (int i = 0; i < tela.largura + 2; i++) 
+        std::cout << '-'; // Isso vai criar o topo da borda do canvas
+    std::cout << std::endl;
 }
+
 void DesenharPonto(Canvas &tela, int x, int y, char simbolo, char cor)
 {
     // Código da lógica será implementado aqui
@@ -89,4 +108,5 @@ void SobreporCanvas(Canvas &telaDestino, const Canvas &telaOrigem1, const Canvas
 bool CompararCanvas(const Canvas &tela1, const Canvas &tela2)
 {
     // Código da lógica será implementado aqui
+    return true;
 }
