@@ -198,7 +198,10 @@ void RedimensionarCanvas(Canvas &tela, int novaLargura, int novaAltura)
 }
 void SobreporCanvas(Canvas &telaDestino, const Canvas &telaOrigem1, const Canvas &telaOrigem2)
 {
-    // Código da lógica será implementado aqui
+    if (telaOrigem1.altura == telaOrigem2.altura && telaOrigem1.largura == telaOrigem2.largura)
+        for (int i = 0; i < telaOrigem1.altura; i++)
+            for (int j = 0; j < telaOrigem1.largura; j++)
+                (telaOrigem2.pixels[i][j] != ' ' ? modificaPixel(telaDestino, j, i, telaOrigem2.pixels[i][j], telaOrigem2.cores[i][j]) : modificaPixel(telaDestino, j, i, telaOrigem1.pixels[i][j], telaOrigem1.cores[i][j]));
 }
 
 bool CompararCanvas(const Canvas &tela1, const Canvas &tela2)
@@ -210,5 +213,6 @@ bool CompararCanvas(const Canvas &tela1, const Canvas &tela2)
                 if (tela1.pixels[i][j] != tela2.pixels[i][j] || tela1.cores[i][j] != tela2.cores[i][j])
                     return false;
         return true;
-    } return false;
+    }
+    return false;
 }
