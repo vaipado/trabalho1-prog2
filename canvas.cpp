@@ -1,7 +1,7 @@
 #include "canvas.hpp"
 #include <iostream>
 
-bool verificaCoordenada(const Canvas &tela, int x, int y) // Uma função que valida coordenadas, fiz para evitar a repetição de código 
+bool verificaCoordenada(const Canvas &tela, int x, int y) // Uma função que valida coordenadas, fiz para evitar a repetição de código
 {
     if (x < 0 || x > tela.largura || y < 0 || y > tela.altura)
         return true; // Se retornar true, então as coordenada são inválidas
@@ -109,7 +109,8 @@ void DesenharLinha(Canvas &tela, int x1, int y1, int x2, int y2, char simbolo, c
     else if (x1 == x2 || y1 == y2)
     {
         for (int i = y1 - 1; i < y2; i++)
-            for (int j = x1 - 1; j < x2; j++){
+            for (int j = x1 - 1; j < x2; j++)
+            {
                 tela.pixels[i][j] = simbolo;
                 tela.cores[i][j] = cor;
             }
@@ -122,11 +123,48 @@ void DesenharLinha(Canvas &tela, int x1, int y1, int x2, int y2, char simbolo, c
 }
 void DesenharRetangulo(Canvas &tela, int x, int y, int largura, int altura, char simbolo, char cor)
 {
-    // Código da lógica será implementado aqui
+    int x2, y2;
+    x2 = x + largura; // Aqui, eu obtenho as segundas coordenadas
+    y2 = y + altura;
+
+    if (verificaCoordenada(tela, x, y) || verificaCoordenada(tela, x2, y2))
+    {
+        std::cerr << "Coordenadas Inválidas!" << std::endl;
+        return;
+    }
+
+    for (int i = x - 1; i < x2; i++)
+    {
+        tela.pixels[i][y - 1] = simbolo;
+        tela.pixels[i][y2 - 1] = simbolo;
+        tela.cores[i][y - 1] = cor;
+        tela.cores[i][y2 - 1] = cor;
+    }
+    for (int i = y - 1; i < y2; i++)
+    {
+        tela.pixels[x - 1][i] = simbolo;
+        tela.pixels[x2 - 1][i] = simbolo;
+        tela.cores[x - 1][i] = cor;
+        tela.cores[x2 - 1][i] = cor;
+    }
 }
 void DesenharRetanguloPreenchido(Canvas &tela, int x, int y, int largura, int altura, char simbolo, char cor)
 {
-    // Código da lógica será implementado aqui
+    int x2, y2;
+    x2 = x + largura; // Aqui, eu obtenho as segundas coordenadas
+    y2 = y + altura;
+
+    if (verificaCoordenada(tela, x, y) || verificaCoordenada(tela, x2, y2))
+    {
+        std::cerr << "Coordenadas Inválidas!" << std::endl;
+        return;
+    }
+    for (int i = x - 1; i < x2; i++)
+        for (int j = y - 1; j < y2; j++)
+        {
+            tela.pixels[i][j] = simbolo;
+            tela.cores[i][j] = cor;
+        }
 }
 void RedimensionarCanvas(Canvas &tela, int novaLargura, int novaAltura)
 {
