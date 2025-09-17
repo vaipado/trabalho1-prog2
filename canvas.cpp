@@ -83,8 +83,14 @@ void ImprimirCanvas(const Canvas &tela)
 
 void DesenharPonto(Canvas &tela, int x, int y, char simbolo, char cor)
 {
-    // Código da lógica será implementado aqui
+    if(x < 0 || x > tela.largura || y < 0 || y > tela.altura){
+        std::cerr << "Coordenadas Inválidas!" << std::endl; // Validação para as coordenadas
+        return;
+    }
+    tela.pixels[y][x] = simbolo;
+    tela.cores[y][x] = cor; 
 }
+
 void DesenharLinha(Canvas &tela, int x1, int y1, int x2, int y2, char simbolo, char cor)
 {
     // Código da lógica será implementado aqui
