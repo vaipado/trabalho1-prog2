@@ -26,23 +26,36 @@ std::string GetColorCode(char cor)
         return "\033[0m"; // Código para Resetar/Padrão
     }
 }
-
 const std::string RESET = GetColorCode(' ');
 
-// Uma função que valida coordenadas, fiz para evitar a repetição de código
-bool verificaCoordenada(const Canvas &tela, int x, int y)
+// <-- funções para evitar repetição de código -->
+
+bool validade(const Canvas &tela, int x, int y) // Uma função que valida coordenadas
 {
     if (x < 0 || x > tela.largura || y < 0 || y > tela.altura) // Verifica se as coordenadas são menores que 0 ou se são maiores que as medidas do canvas
         return true;
     return false;
 }
 
-// Uma função que modifica o valor de um pixel ou cor nas matrizes, também fiz para não repetir código
-void modificaPixel(Canvas &tela, int x, int y, char simbolo, char cor)
+void modificaCanvas(Canvas &tela, int x, int y, char simbolo, char cor) // Uma função que modifica o valor de um pixel ou cor nas matrizes do canvas
 {
     tela.pixels[y][x] = simbolo;
     tela.cores[y][x] = cor;
 }
+
+bool igualdade(int c1, int c2) // Função simples que verifica igualdade
+{
+    return c1 == c2;
+}
+
+void itera(int inicio, int fim, int inicio2, int fim2, Canvas &tela, char simbolo, char cor) // Função que itera em dois for's e modifica o canvas chamando a função modificaCanvas() passando seus devidos parâmetros
+{
+    for (int i = inicio; i < fim; i++)
+        for (int j = inicio2; j < fim2; j++)
+            modificaCanvas(tela, j, i, simbolo, cor);
+}
+
+// <-- funções cobradas no trabalho -->
 
 void CriarCanvas(Canvas &tela, int largura, int altura)
 {
@@ -72,7 +85,7 @@ void CriarCanvas(Canvas &tela, int largura, int altura)
 
         for (int j = 0; j < largura; j++) // Aqui eu preencho as matrizes do canvas
         {
-            modificaPixel(tela, j, i, ' ', ' ');
+            modificaCanvas(tela, j, i, ' ', ' ');
         }
     }
 }
@@ -124,28 +137,24 @@ void ImprimirCanvas(const Canvas &tela)
 
 void DesenharPonto(Canvas &tela, int x, int y, char simbolo, char cor)
 {
-    if (verificaCoordenada(tela, x, y)) // Validação para as coordenadas
+    if (validade(tela, x, y)) // Validação para as coordenadas
     {
         std::cout << GetColorCode('R') << "Coordenadas Inválidas!" << RESET << std::endl;
         return;
     }
-    modificaPixel(tela, x, y, simbolo, cor); // Após a validação, eu modifico o simbolo e a cor
+    modificaCanvas(tela, x, y, simbolo, cor); // Após a validação, eu modifico o simbolo e a cor
 }
 
 void DesenharLinha(Canvas &tela, int x1, int y1, int x2, int y2, char simbolo, char cor)
 {
-    if (verificaCoordenada(tela, x1, y1) || verificaCoordenada(tela, x2, y2)) // Validação para as coordenadas
+    if (validade(tela, x1, y1) || validade(tela, x2, y2)) // Validação para as coordenadas
     {
         std::cout << GetColorCode('R') << "Coordenadas Inválidas!" << RESET << std::endl;
         return;
     }
-    if (x1 == x2 || y1 == y2) // Garante que a linha seja absolutamente horizontal ou vertical
+    if (igualdade(x1, x2) || igualdade(y1, y2)) // Garante que a linha seja absolutamente horizontal ou vertical
     {
-        for (int i = y1 - 1; i < y2; i++)
-            for (int j = x1 - 1; j < x2; j++)
-            {
-                modificaPixel(tela, j, i, simbolo, cor);
-            }
+        itera(y1 - 1, y2, x1 - 1, x2, tela, simbolo, cor); // Desenho a linha
         return;
     }
     // Se chegou aqui, quer dizer que a linha não é absolutamente horizontal ou vertical e, portanto, nem preciso de um 'else'
@@ -159,7 +168,7 @@ void DesenharRetangulo(Canvas &tela, int x, int y, int largura, int altura, char
     x2 = x + largura; // Aqui, eu obtenho as segundas coordenadas
     y2 = y + altura;
 
-    if (verificaCoordenada(tela, x, y) || verificaCoordenada(tela, x2, y2))
+    if (validade(tela, x, y) || validade(tela, x2, y2))
     {
         std::cout << GetColorCode('R') << "Coordenadas Inválidas!" << RESET << std::endl;
         return;
@@ -167,13 +176,13 @@ void DesenharRetangulo(Canvas &tela, int x, int y, int largura, int altura, char
 
     for (int i = x - 1; i < x2; i++) // Aqui eu "desenho" as duas bases do retângulo
     {
-        modificaPixel(tela, i, y - 1, simbolo, cor);  // A de cima
-        modificaPixel(tela, i, y2 - 1, simbolo, cor); // A de baixo
+        modificaCanvas(tela, i, y - 1, simbolo, cor);  // A de cima
+        modificaCanvas(tela, i, y2 - 1, simbolo, cor); // A de baixo
     }
     for (int i = y - 1; i < y2; i++) // Aqui eu "desenho" as duas laterais
     {
-        modificaPixel(tela, x - 1, i, simbolo, cor);  // A da esquerda
-        modificaPixel(tela, x2 - 1, i, simbolo, cor); // A da direita
+        modificaCanvas(tela, x - 1, i, simbolo, cor);  // A da esquerda
+        modificaCanvas(tela, x2 - 1, i, simbolo, cor); // A da direita
     }
 }
 void DesenharRetanguloPreenchido(Canvas &tela, int x, int y, int largura, int altura, char simbolo, char cor)
@@ -182,14 +191,13 @@ void DesenharRetanguloPreenchido(Canvas &tela, int x, int y, int largura, int al
     x2 = x + largura; // Aqui, eu obtenho as segundas coordenadas
     y2 = y + altura;
 
-    if (verificaCoordenada(tela, x, y) || verificaCoordenada(tela, x2, y2)) // Valido as coordenadas
+    if (validade(tela, x, y) || validade(tela, x2, y2)) // Valido as coordenadas
     {
         std::cout << GetColorCode('R') << "Coordenadas Inválidas!" << RESET << std::endl;
         return;
     }
-    for (int i = x - 1; i < x2; i++) // Preencho todo o retângulo formado pelas 4 coordenadas (é como se eu tivesse preenchendo uma matriz)
-        for (int j = y - 1; j < y2; j++)
-            modificaPixel(tela, i, j, simbolo, cor);
+    // Preencho todo o retângulo formado pelas 4 coordenadas (é como se eu tivesse preenchendo uma matriz)
+    itera(y - 1, y2, x - 1, x2, tela, simbolo, cor);
 }
 void RedimensionarCanvas(Canvas &tela, int novaLargura, int novaAltura)
 {
@@ -197,7 +205,7 @@ void RedimensionarCanvas(Canvas &tela, int novaLargura, int novaAltura)
     CriarCanvas(tela2, tela.largura, tela.altura); // Crio um "canvas auxiliar" que vai guardar o conteúdo do canvas que estamos trabalhando
     for (int i = 0; i < tela.altura; i++)
         for (int j = 0; j < tela.largura; j++)
-            modificaPixel(tela2, j, i, tela.pixels[i][j], tela.cores[i][j]);
+            modificaCanvas(tela2, j, i, tela.pixels[i][j], tela.cores[i][j]);
 
     CriarCanvas(tela, novaLargura, novaAltura); // Redimensiono o canvas que estamos trabalhando
     int altura, largura;
@@ -206,21 +214,21 @@ void RedimensionarCanvas(Canvas &tela, int novaLargura, int novaAltura)
 
     for (int i = 0; i < altura; i++)
         for (int j = 0; j < largura; j++)
-            modificaPixel(tela, j, i, tela2.pixels[i][j], tela2.cores[i][j]); // "Preencho" o novo canvas com o conteúdo do antigo canvas
+            modificaCanvas(tela, j, i, tela2.pixels[i][j], tela2.cores[i][j]); // "Preencho" o novo canvas com o conteúdo do antigo canvas
 }
 
 void SobreporCanvas(Canvas &telaDestino, const Canvas &telaOrigem1, const Canvas &telaOrigem2)
 {
-    if (telaOrigem1.altura == telaOrigem2.altura && telaOrigem1.largura == telaOrigem2.largura) // Verifico se as medidas são iguais
+    if (igualdade(telaOrigem1.altura, telaOrigem2.altura) && igualdade(telaOrigem1.largura, telaOrigem2.largura)) // Verifico se as medidas são iguais
         for (int i = 0; i < telaOrigem1.altura; i++)
             for (int j = 0; j < telaOrigem1.largura; j++)
-                (telaOrigem2.pixels[i][j] != ' ' ? modificaPixel(telaDestino, j, i, telaOrigem2.pixels[i][j], telaOrigem2.cores[i][j]) : modificaPixel(telaDestino, j, i, telaOrigem1.pixels[i][j], telaOrigem1.cores[i][j]));
-                // Se o pixel do canvas B for difente de ' ', priorizar o valor desse pixel, "subscrevendo" o pixel do canvas A
+                (telaOrigem2.pixels[i][j] != ' ' ? modificaCanvas(telaDestino, j, i, telaOrigem2.pixels[i][j], telaOrigem2.cores[i][j]) : modificaCanvas(telaDestino, j, i, telaOrigem1.pixels[i][j], telaOrigem1.cores[i][j]));
+    // Se o pixel do canvas B for difente de ' ', priorizar o valor desse pixel, "subscrevendo" o pixel do canvas A
 }
 
 bool CompararCanvas(const Canvas &tela1, const Canvas &tela2)
 {
-    if (tela1.altura == tela2.altura && tela1.largura == tela2.largura) // Verifico se as medidas são iguais
+    if (igualdade(tela1.altura, tela2.altura) && igualdade(tela1.largura, tela2.largura)) // Verifico se as medidas são iguais
     {
         for (int i = 0; i < tela1.altura; i++)
             for (int j = 0; j < tela1.largura; j++)
