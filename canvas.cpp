@@ -194,8 +194,23 @@ void DesenharRetanguloPreenchido(Canvas &tela, int x, int y, int largura, int al
 }
 void RedimensionarCanvas(Canvas &tela, int novaLargura, int novaAltura)
 {
-    // Código da lógica será implementado aqui
+    Canvas tela2;
+    CriarCanvas(tela2, tela.largura, tela.altura);
+    for (int i = 0; i < tela.altura; i++)
+        for (int j = 0; j < tela.largura; j++)
+            modificaPixel(tela2, j, i, tela.pixels[i][j], tela.cores[i][j]);
+
+    DestruirCanvas(tela);
+    CriarCanvas(tela, novaLargura, novaAltura);
+    int altura, largura;
+    (tela2.altura > novaAltura ? altura = novaAltura : altura = tela2.altura);
+    (tela2.largura > novaLargura ? largura = novaLargura : largura = tela2.largura);
+
+    for(int i = 0; i < altura; i++)
+        for(int j = 0; j < largura; j++)
+            modificaPixel(tela, j, i, tela2.pixels[i][j], tela2.cores[i][j]);
 }
+
 void SobreporCanvas(Canvas &telaDestino, const Canvas &telaOrigem1, const Canvas &telaOrigem2)
 {
     if (telaOrigem1.altura == telaOrigem2.altura && telaOrigem1.largura == telaOrigem2.largura)
