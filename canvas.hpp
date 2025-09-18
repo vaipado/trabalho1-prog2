@@ -22,5 +22,4 @@ void RedimensionarCanvas(Canvas& tela, int novaLargura, int novaAltura);
 void SobreporCanvas(Canvas& telaDestino, const Canvas& telaOrigem1, const Canvas& telaOrigem2);
 bool CompararCanvas(const Canvas& tela1, const Canvas& tela2);
 
-
 #endif
