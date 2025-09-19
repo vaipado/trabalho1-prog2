@@ -208,9 +208,9 @@ void RedimensionarCanvas(Canvas &tela, int novaLargura, int novaAltura)
             modificaCanvas(tela2, j, i, tela.pixels[i][j], tela.cores[i][j]);
 
     CriarCanvas(tela, novaLargura, novaAltura); // Redimensiono o canvas que estamos trabalhando
-    int altura, largura;
-    (tela2.altura > novaAltura ? altura = novaAltura : altura = tela2.altura); // Determino as medidas para serem usadas no for que iterará sob as matrizes de pixels e cores do novo canvas
-    (tela2.largura > novaLargura ? largura = novaLargura : largura = tela2.largura);
+    // Determino as medidas para serem usadas no for que iterará sob as matrizes de pixels e cores do novo canvas para "passar" o conteúdo do antigo para o novo
+    int altura = std::min(tela2.altura, novaAltura); // min() -> eu pego o menor valor entre os parâmetros passados
+    int largura = std::min(tela2.largura, novaLargura);
 
     for (int i = 0; i < altura; i++)
         for (int j = 0; j < largura; j++)
